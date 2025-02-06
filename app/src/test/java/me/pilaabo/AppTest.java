@@ -1,8 +1,7 @@
-package org.example;
+package me.pilaabo;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +23,8 @@ class AppTest {
         desiredCapabilities.setCapability("appium:automationName", "uiautomator2");
         desiredCapabilities.setCapability("appium:appPackage", "org.wikipedia.alpha");
         desiredCapabilities.setCapability("appium:appActivity", "org.wikipedia.main.MainActivity");
-        desiredCapabilities.setCapability("appium:app", System.getProperty("user.dir") + "/src/test/resources/apks/app-alpha-universal-release.apk");
+        desiredCapabilities.setCapability("appium:app",
+                System.getProperty("user.dir") + "/src/test/resources/apks/app-alpha-universal-release.apk");
 
         driver = new AndroidDriver(new URL("http://192.168.1.3:4723"), desiredCapabilities);
     }

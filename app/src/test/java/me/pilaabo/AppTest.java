@@ -68,7 +68,7 @@ class AppTest {
         );
         waitForElementPresentByXpath(
                 "//*[@resource-id=\"org.wikipedia.alpha:id/main_toolbar_wordmark\"]",
-                "Cannot find 'Search Wikipedia' input",
+                "Cannot find 'Wikipedia' logo",
                 5
         );
     }

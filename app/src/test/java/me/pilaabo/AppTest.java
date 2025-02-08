@@ -37,18 +37,18 @@ class AppTest {
 
     @Test
     public void testSearch() {
-        waitForElementByXpathAndClick(
-                "//*[contains(@text, 'Search Wikipedia')]",
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Cannot find 'Search Wikipedia' input",
                 5
         );
-        waitForElementByXpathAndSendKeys(
-                "//*[contains(@text, 'Search Wikipedia')]",
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Java", "Cannot find search input",
                 5
         );
-        waitForElementPresentByXpath(
-                "//*[contains(@text, 'Java (programming language)')]",
+        waitForElementPresent(
+                By.xpath("//*[contains(@text, 'Java (programming language)')]"),
                 "Cannot find 'Java (programming language)' topic",
                 15
         );
@@ -56,18 +56,18 @@ class AppTest {
 
     @Test
     public void testCancelSearch() {
-        waitForElementByXpathAndClick(
-                "//*[contains(@text, 'Search Wikipedia')]",
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Cannot find 'Search Wikipedia' input",
                 5
         );
-        waitForElementByXpathAndClick(
-                "//*[@content-desc=\"Navigate up\"]",
+        waitForElementAndClick(
+                By.xpath("//*[@content-desc=\"Navigate up\"]"),
                 "Cannot find 'Cancel' button",
                 5
         );
-        waitForElementPresentByXpath(
-                "//*[@resource-id=\"org.wikipedia.alpha:id/main_toolbar_wordmark\"]",
+        waitForElementPresent(
+                By.xpath("//*[@resource-id=\"org.wikipedia.alpha:id/main_toolbar_wordmark\"]"),
                 "Cannot find 'Wikipedia' logo",
                 5
         );
@@ -78,21 +78,20 @@ class AppTest {
         driver.quit();
     }
 
-    private WebElement waitForElementPresentByXpath(String xpath, String errorMessage, int timeout) {
+    private WebElement waitForElementPresent(By by, String errorMessage, int timeout) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
         wait.withMessage(errorMessage + "\n");
-        By by = By.xpath(xpath);
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
-    private WebElement waitForElementByXpathAndClick(String xpath, String errorMessage, int timeout) {
-        WebElement element = waitForElementPresentByXpath(xpath, errorMessage, timeout);
+    private WebElement waitForElementAndClick(By by, String errorMessage, int timeout) {
+        WebElement element = waitForElementPresent(by, errorMessage, timeout);
         element.click();
         return element;
     }
 
-    private WebElement waitForElementByXpathAndSendKeys(String xpath, String value, String errorMessage, int timeout) {
-        WebElement element = waitForElementPresentByXpath(xpath, errorMessage, timeout);
+    private WebElement waitForElementAndSendKeys(By by, String value, String errorMessage, int timeout) {
+        WebElement element = waitForElementPresent(by, errorMessage, timeout);
         element.sendKeys(value);
         return element;
     }

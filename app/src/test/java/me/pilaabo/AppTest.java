@@ -7,7 +7,6 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -30,36 +29,53 @@ class AppTest {
         desiredCapabilities.setCapability("appium:automationName", "uiautomator2");
         desiredCapabilities.setCapability("appium:appPackage", "org.wikipedia.alpha");
         desiredCapabilities.setCapability("appium:appActivity", "org.wikipedia.main.MainActivity");
-        desiredCapabilities.setCapability("appium:app", System.getProperty("user.dir") + "/src/test/resources/apks/app-alpha-universal-release.apk");
+        desiredCapabilities.setCapability("appium:app",System.getProperty("user.dir") + "/src/test/resources/apks/app-alpha-universal-release.apk");
 
         driver = new AndroidDriver(URL.of(URI.create("http://127.0.0.1:4723"), null), desiredCapabilities);
-    }
-
-    @BeforeEach
-    public void skipOnboarding() {
-        driver.findElement(By.id("org.wikipedia.alpha:id/fragment_onboarding_skip_button")).click();
+        driver.findElement(By.xpath("//*[contains(@text, 'Skip')]")).click(); // Skip the first screen
     }
 
     @Test
-    public void firstTest() {
-        WebElement initSeach = waitForElementPresentById("org.wikipedia.alpha:id/search_container", "Cannot find init search field");
-        initSeach.click();
-        WebElement search = waitForElementPresentById("org.wikipedia.alpha:id/search_src_text", "Cannot find search field");
-        search.sendKeys("Java");
-        waitForElementPresentByXpath("//*[contains(@text, 'Java (programming language)')]", "Cannot find 'Java (programming language)' search result");
+    public void testSearch() {
+        waitForElementByXpathAndClick(
+                "//*[contains(@text, 'Search Wikipedia')]",
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+        waitForElementByXpathAndSendKeys(
+                "//*[contains(@text, 'Search Wikipedia')]",
+                "Java", "Cannot find search input",
+                5
+        );
+        waitForElementPresentByXpath(
+                "//*[contains(@text, 'Java (programming language)')]",
+                "Cannot find 'Java (programming language)' topic",
+                15
+        );
+    }
+
+    @Test
+    public void testCancelSearch() {
+        waitForElementByXpathAndClick(
+                "//*[contains(@text, 'Search Wikipedia')]",
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+        waitForElementByXpathAndClick(
+                "//*[@content-desc=\"Navigate up\"]",
+                "Cannot find 'Cancel' button",
+                5
+        );
+        waitForElementPresentByXpath(
+                "//*[@resource-id=\"org.wikipedia.alpha:id/main_toolbar_wordmark\"]",
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
     }
 
     @AfterAll
     public static void tearDown() {
         driver.quit();
-    }
-
-    private WebElement waitForElementPresentByXpath(String xpath, String errorMessage) {
-        return waitForElementPresentByXpath(xpath, errorMessage, 5);
-    }
-
-    private WebElement waitForElementPresentById(String id, String errorMessage) {
-        return waitForElementPresentById(id, errorMessage, 5);
     }
 
     private WebElement waitForElementPresentByXpath(String xpath, String errorMessage, int timeout) {
@@ -69,10 +85,15 @@ class AppTest {
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
-    private WebElement waitForElementPresentById(String id, String errorMessage, int timeout) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
-        wait.withMessage(errorMessage + "\n");
-        By by = By.id(id);
-        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+    private WebElement waitForElementByXpathAndClick(String xpath, String errorMessage, int timeout) {
+        WebElement element = waitForElementPresentByXpath(xpath, errorMessage, timeout);
+        element.click();
+        return element;
+    }
+
+    private WebElement waitForElementByXpathAndSendKeys(String xpath, String value, String errorMessage, int timeout) {
+        WebElement element = waitForElementPresentByXpath(xpath, errorMessage, timeout);
+        element.sendKeys(value);
+        return element;
     }
 }

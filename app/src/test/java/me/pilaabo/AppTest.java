@@ -62,6 +62,16 @@ class AppTest {
                 "Cannot find 'Search Wikipedia' input",
                 5
         );
+        waitForElementAndSendKeys(
+            By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+            "Java", "Cannot find search input",
+            5
+        );
+        waitForElementAndClear(
+            By.xpath("//*[contains(@text, 'Java')]"),
+            "Cannot find search input",
+            5
+        );
         waitForElementAndClick(
                 By.xpath("//*[@content-desc=\"Navigate up\"]"),
                 "Cannot find 'Cancel' button",
@@ -120,6 +130,12 @@ class AppTest {
     private WebElement waitForElementAndSendKeys(By by, String value, String errorMessage, int timeout) {
         WebElement element = waitForElementPresent(by, errorMessage, timeout);
         element.sendKeys(value);
+        return element;
+    }
+
+    private WebElement waitForElementAndClear(By by, String errorMessage, int timeout) {
+        WebElement element = waitForElementPresent(by, errorMessage, timeout);
+        element.clear();
         return element;
     }
 }

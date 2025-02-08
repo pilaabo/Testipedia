@@ -32,7 +32,7 @@ class AppTest {
         desiredCapabilities.setCapability("appium:appActivity", "org.wikipedia.main.MainActivity");
         desiredCapabilities.setCapability("appium:app", System.getProperty("user.dir") + "/src/test/resources/apks/app-alpha-universal-release.apk");
 
-        driver = new AndroidDriver(URL.of(URI.create("http://192.168.1.3:4723"), null), desiredCapabilities);
+        driver = new AndroidDriver(URL.of(URI.create("http://127.0.0.1:4723"), null), desiredCapabilities);
     }
 
     @BeforeEach
@@ -42,10 +42,11 @@ class AppTest {
 
     @Test
     public void firstTest() {
-        WebElement initSeach = waitForElementById("org.wikipedia.alpha:id/search_container", "Cannot find init search field");
+        WebElement initSeach = waitForElementPresentById("org.wikipedia.alpha:id/search_container", "Cannot find init search field");
         initSeach.click();
-        WebElement search = waitForElementById("org.wikipedia.alpha:id/search_src_text", "Cannot find search field");
-        search.sendKeys("Appium");
+        WebElement search = waitForElementPresentById("org.wikipedia.alpha:id/search_src_text", "Cannot find search field");
+        search.sendKeys("Java");
+        waitForElementPresentByXpath("//*[contains(@text, 'Java (programming language)')]", "Cannot find 'Java (programming language)' search result");
     }
 
     @AfterAll
@@ -53,22 +54,22 @@ class AppTest {
         driver.quit();
     }
 
-    private WebElement waitForElementByXpath(String xpath, String errorMessage) {
-        return waitForElementByXpath(xpath, errorMessage, 5);
+    private WebElement waitForElementPresentByXpath(String xpath, String errorMessage) {
+        return waitForElementPresentByXpath(xpath, errorMessage, 5);
     }
 
-    private WebElement waitForElementById(String id, String errorMessage) {
-        return waitForElementById(id, errorMessage, 5);
+    private WebElement waitForElementPresentById(String id, String errorMessage) {
+        return waitForElementPresentById(id, errorMessage, 5);
     }
 
-    private WebElement waitForElementByXpath(String xpath, String errorMessage, int timeout) {
+    private WebElement waitForElementPresentByXpath(String xpath, String errorMessage, int timeout) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
         wait.withMessage(errorMessage + "\n");
         By by = By.xpath(xpath);
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
-    private WebElement waitForElementById(String id, String errorMessage, int timeout) {
+    private WebElement waitForElementPresentById(String id, String errorMessage, int timeout) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
         wait.withMessage(errorMessage + "\n");
         By by = By.id(id);

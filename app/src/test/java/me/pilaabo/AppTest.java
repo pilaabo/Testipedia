@@ -10,10 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -44,15 +42,23 @@ class AppTest {
 
     @Test
     public void firstTest() {
-        WebElement initSeach = waitForElementById("org.wikipedia.alpha:id/search_container", "Cannot find init search", 5);
+        WebElement initSeach = waitForElementById("org.wikipedia.alpha:id/search_container", "Cannot find init search field");
         initSeach.click();
-        WebElement search = waitForElementById("org.wikipedia.alpha:id/search_src_text", "Cannot find search field", 5);
+        WebElement search = waitForElementById("org.wikipedia.alpha:id/search_src_text", "Cannot find search field");
         search.sendKeys("Appium");
     }
 
     @AfterAll
     public static void tearDown() {
         driver.quit();
+    }
+
+    private WebElement waitForElementByXpath(String xpath, String errorMessage) {
+        return waitForElementByXpath(xpath, errorMessage, 5);
+    }
+
+    private WebElement waitForElementById(String id, String errorMessage) {
+        return waitForElementById(id, errorMessage, 5);
     }
 
     private WebElement waitForElementByXpath(String xpath, String errorMessage, int timeout) {

@@ -6,6 +6,7 @@ import java.net.URL;
 import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -71,6 +72,32 @@ class AppTest {
                 "Cannot find 'Wikipedia' logo",
                 5
         );
+    }
+
+    @Test
+    public void testCompareArticleTitle() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Java", "Cannot find search input",
+                5
+        );
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Java (programming language)')]"),
+                "Cannot find 'Java (programming language)' topic",
+                15
+        );
+        WebElement titleElement = waitForElementPresent(
+                By.xpath("//*[@text=\"Java (programming language)\"]"),
+                "Cannot find article title",
+                15
+        );
+        String articleTitle = titleElement.getAttribute("text");
+        Assertions.assertEquals("Java (programming language)", articleTitle, "Article title is not 'Java (programming language)");
     }
 
     @AfterAll

@@ -2,7 +2,6 @@ package me.pilaabo;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
@@ -32,7 +31,7 @@ class AppTest {
         desiredCapabilities.setCapability("appium:appActivity", "org.wikipedia.main.MainActivity");
         desiredCapabilities.setCapability("appium:app",System.getProperty("user.dir") + "/src/test/resources/apks/app-alpha-universal-release.apk");
 
-        driver = new AndroidDriver(URL.of(URI.create("http://127.0.0.1:4723"), null), desiredCapabilities);
+        driver = new AndroidDriver(URI.create("http://127.0.0.1:4723").toURL(), desiredCapabilities);
         driver.findElement(By.xpath("//*[contains(@text, 'Skip')]")).click(); // Skip the first screen
     }
 
@@ -106,8 +105,7 @@ class AppTest {
                 "Cannot find article title",
                 15
         );
-        String articleTitle = titleElement.getAttribute("text");
-        Assertions.assertEquals("Java (programming language)", articleTitle, "Article title is not 'Java (programming language)");
+        assertElementHasText(titleElement, "Java (programming language)", "Article title is not 'Java (programming language)");
     }
 
     @AfterAll
@@ -137,5 +135,9 @@ class AppTest {
         WebElement element = waitForElementPresent(by, errorMessage, timeout);
         element.clear();
         return element;
+    }
+
+    private void assertElementHasText(WebElement element, String expectedValue, String errorMessage) {
+        Assertions.assertEquals(expectedValue, element.getText(), errorMessage);
     }
 }
